@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import TicketList from "./components/TicketList/TicketList";
-import TicketDetail from "./components/TicketDetail/TicketDetail";
+import { Switch, Route } from "react-router-dom";
+import axios from "axios";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
+import Form from "./components/Form/Form";
+import TicketList from "./components/TicketList/TicketList";
+import TicketDetail from "./components/TicketDetail/TicketDetail";
 import "./App.css";
-import { Switch, Route } from "react-router-dom";
 
 class App extends Component {
   constructor(props) {
@@ -13,16 +15,22 @@ class App extends Component {
     this.state = {
       tickets: {},
       ticket: {},
-      canGetTickets: false,
-      username: "enockscoleman@gmail.com",
-      subdomain: "colenocks",
-      password: "Coledesk",
+      isAuth: false,
+      items_per_page: 25,
+      // total_tickets: Object.keys(this.state.tickets).length,
+      username: "",
+      subdomain: "",
+      password: "",
+      adminUsername: "enockscoleman@gmail.com",
+      adminSubdomain: "colenocks",
+      adminPassword: "Coledesk",
     };
 
     //bind the function so to use in a class
     this.viewTicket = this.viewTicket.bind(this);
     this.getTickets = this.getTickets.bind(this);
-    this.accessTickets = this.accessTickets.bind(this);
+    this.getAccess = this.getAccess.bind(this);
+    this.getAdminTickets = this.getAdminTickets.bind(this);
   }
 
   viewTicket(id) {
@@ -37,45 +45,111 @@ class App extends Component {
       .then((res) => {
         if (res) {
           if (res.status !== 200) {
-            window.M.toast({ html: "Failed to fetch status" });
+            window.M.toast({ html: "Could not find ticket" });
           }
+          return;
         }
         this.setState({ ticket: res.data.ticket });
       })
       .catch((err) => {
-        window.M.toast({ html: err });
+        window.M.toast({ html: err, displayLength: 8000 });
       });
   }
 
-  accessTickets() {
-    this.setState({ canGetTickets: true });
+  getAccess(username, password, subdomain) {
+    // const { username, password, subdomain } = this.state;
+    if (username && password && subdomain) {
+      this.setState({ isAuth: true, username, password, subdomain });
+    }
   }
 
   getTickets() {
-    //fetch all tickets with authorization
+    const url = `https://${this.state.subdomain}.zendesk.com/api/v2/imports/tickets`;
+
+    axios
+      .get(url, {
+        auth: {
+          username: this.state.username,
+          password: this.state.password,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          if (res.status !== 200) {
+            window.M.toast({ html: "Failed to fetch tickets" });
+          }
+          return;
+        }
+        this.setState({ tickets: res.data.tickets });
+      })
+      .catch((err) => {
+        window.M.toast({ html: err, displayLength: 8000 });
+      });
+  }
+
+  getAdminTickets() {
+    const url = `https://${this.state.adminSubdomain}.zendesk.com/api/v2/imports/tickets`;
+
+    axios
+      .get(url, {
+        auth: {
+          username: this.state.adminUsername,
+          password: this.state.adminPassword,
+        },
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
+      .then((res) => {
+        if (res) {
+          window.M.toast({ html: res.status });
+          if (res.status !== 200) {
+            window.M.toast({ html: "Failed to fetch tickets" });
+          }
+          return;
+        }
+        this.setState({ tickets: res.data.tickets });
+      })
+      .catch((err) => {
+        window.M.toast({
+          html: "Something went wrong! " + err,
+          displayLength: 8000,
+        });
+      });
   }
 
   render() {
     return (
       <React.Fragment>
         <div className='wrapper'>
-          <Switch>
-            <Header />
-            <div className='main'>
-              <Form />
-              <TicketList
-                ticket={this.state.ticket}
-                tickets={this.state.tickets}
-                viewProject={this.viewTicket}
+          <Header />
+          <div className='main'>
+            <Form getAccess={this.getAccess} />
+            <Switch>
+              <Route
+                exact
+                path='/ticket-list'
+                render={() => (
+                  <TicketList
+                    ticket={this.state.ticket}
+                    tickets={this.state.tickets}
+                    items_per_page={this.state.items_per_page}
+                    isAuth={this.state.isAuth}
+                    viewProject={this.viewTicket}
+                    getAccess={this.getAccess}
+                    getTickets={this.getTickets}
+                    getAdminTickets={this.getAdminTickets}
+                  />
+                )}
               />
               <Route
                 exact
                 path='/ticket-details'
                 render={() => <TicketDetail ticket={this.state.ticket} />}
               />
-            </div>
-            <Footer />
-          </Switch>
+            </Switch>
+          </div>
+          <Footer />
         </div>
       </React.Fragment>
     );

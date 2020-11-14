@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 class Header extends Component {
   render() {
@@ -6,18 +7,18 @@ class Header extends Component {
       <header>
         <nav>
           <div className='nav-wrapper'>
-            <a href='#!' className='brand-logo'>
+            <Link to='/' className='brand-logo'>
               Zentickets
-            </a>
-            <a href='#!' data-target='mobile-menu' className='sidenav-trigger'>
+            </Link>
+            <Link to='/' data-target='mobile-menu' className='sidenav-trigger'>
               <i className='material-icons'>menu</i>
-            </a>
+            </Link>
             <ul id='nav-mobile' className='right hide-on-med-and-down'>
               <li>
-                <a href='#!'>Home</a>
+                <Link to='/'>Home</Link>
               </li>
               <li>
-                <a href='#!'>All tickets</a>
+                <Link to='/ticket-list'>Tickets</Link>
               </li>
             </ul>
           </div>
@@ -25,10 +26,10 @@ class Header extends Component {
 
         <ul className='sidenav' id='mobile-menu'>
           <li>
-            <a href='#!'>Home</a>
+            <Link to='/'>Home</Link>
           </li>
           <li>
-            <a href='#!'>All tickets</a>
+            <Link to='/ticket-list'>Tickets</Link>
           </li>
         </ul>
       </header>
