@@ -1,29 +1,23 @@
-# Getting Started with Create React App
+# Getting Started with Zentickets
+
+Zentickets is a Zendesk ticket viewer UI that connects to the Zendesk API using OAuth Authentication, requests all the tickets for my account and displays them in a list.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Tools Used
+## Usage Instructions
 
-1. Materialize (CDN)
+1. To successfully run this application on your machine, make sure no other application is running on port 3000.
 
-## Installation Instructions
+2. In the project directory, you can run:
 
-## Available Scripts
+   ### `npm start`
 
-In the project directory, you can run:
+   This automatically opens up [http://localhost:3000](http://localhost:3000) in the browser.
 
-### `npm start`
+3. This takes you to an authorization page to all or deny access to retrieve tickets. Click allow to get access to the tickets.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+4. After Authorization is successful, users will be brought to the screen below, to make requests to the Zendesk API, view all tickets and see each ticket in details as well.
 
-### `npm test`
+## About Zendesk
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Zendesk is a customer service tool that allows the creation and management of support tickets. [Find out more](https://www.zendesk.com/)

@@ -1,43 +1,49 @@
 import React from "react";
 import TicketItem from "../TicketItem/TicketItem";
-import { Link } from "react-router-dom";
+import Home from "../Home/Home";
+import Pagination from "./../Pagination/Pagination";
+import { TicketConsumer } from "../../contextAPI/ticketApi";
 
-const TicketList = (props) => {
+const TicketList = () => {
   return (
-    <div className='ticket-container'>
-      {props.isAuth ? (
-        <React.Fragment>
-          <div className='col s4 offset-s1'>
-            <button
-              className='waves-effect waves-purple btn'
-              onClick={() => props.getTickets()}>
-              Show Tickets
-            </button>
+    <TicketConsumer>
+      {(value) => {
+        return (
+          <div className='ticket-container'>
+            {value.currentTickets.length > 0 ? (
+              <React.Fragment>
+                <ul>
+                  <li className='collection-header'>
+                    <h4>All Tickets</h4>
+                  </li>
+                  <li>
+                    {value.currentTickets.map((ticket) => (
+                      <TicketItem
+                        key={ticket.id}
+                        ticket={ticket}
+                        viewTicket={value.viewTicket}
+                        truncateText={value.truncateText}
+                      />
+                    ))}
+                  </li>
+                </ul>
+                <Pagination
+                  ticketsPerPage={value.ticketsPerPage}
+                  totalTickets={Object.keys(value.tickets).length}
+                  currentPage={value.currentPage}
+                  currentTickets={value.currentTickets}
+                  currentPageHandler={value.currentPageHandler}
+                  prevPageHandler={value.prevPageHandler}
+                  nextPageHandler={value.nextPageHandler}
+                />
+              </React.Fragment>
+            ) : (
+              <Home />
+            )}
           </div>
-          <ul>
-            <li className='collection-header'>
-              <h4>All Tickets</h4>
-            </li>
-            <li>
-              {props.tickets.map((ticket) => (
-                <TicketItem ticket={ticket} viewProject={props.viewProject} />
-              ))}
-            </li>
-          </ul>
-        </React.Fragment>
-      ) : (
-        <div>
-          <h6>
-            Sign in to get your tickets or{" "}
-            <span>
-              <Link to='/ticket-list' onClick={() => props.getAdminTickets()}>
-                view my tickets
-              </Link>
-            </span>
-          </h6>
-        </div>
-      )}
-    </div>
+        );
+      }}
+    </TicketConsumer>
   );
 };
 

@@ -26,10 +26,14 @@ class Header extends Component {
 
         <ul className='sidenav' id='mobile-menu'>
           <li>
-            <Link to='/'>Home</Link>
+            <Link className='sidenav-close' to='/'>
+              Home
+            </Link>
           </li>
           <li>
-            <Link to='/ticket-list'>Tickets</Link>
+            <Link className='sidenav-close' to='/ticket-list'>
+              Tickets
+            </Link>
           </li>
         </ul>
       </header>
